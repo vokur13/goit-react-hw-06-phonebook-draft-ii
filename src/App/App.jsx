@@ -6,10 +6,15 @@ import { ContactList } from '../components/ContactList';
 import { nanoid } from 'nanoid';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { initailContacts } from '../utils/initialContacts';
+import { useSelector, useDispatch } from 'react-redux';
+import { add, remove } from '../redux/contacts/slice';
 
 const STORAGE_KEY = 'contacts';
 
 export const App = () => {
+  const dispatch = useDispatch();
+  const value = useSelector(state => state.contacts);
+
   const [contacts, setContacts] = useLocalStorage(STORAGE_KEY, initailContacts);
   const [filter, setFilter] = useState('');
 
@@ -42,6 +47,12 @@ export const App = () => {
 
   return (
     <Box width={1} p={4} bg="bgBasic" as="main">
+      <>
+        <button onClick={() => dispatch(add(payload))}>Add</button>
+        {value}
+        <button onClick={() => dispatch(remove(payload))}>Remove</button>
+      </>
+
       <h1>Phonebook</h1>
       <ContactForm onFormSubmit={formSubmitHandler} />
 
