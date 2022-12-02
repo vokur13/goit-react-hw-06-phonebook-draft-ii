@@ -1,22 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Box } from '../components/Box';
 import { ContactForm } from '../components/ContactForm';
 import { Filter } from '../components/Filter';
 import { ContactList } from '../components/ContactList';
 import { nanoid } from 'nanoid';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { initailContacts } from '../utils/initialContacts';
 import { useSelector, useDispatch } from 'react-redux';
-import { add, remove, findFilter } from '../redux/contacts/slice';
-
-const STORAGE_KEY = 'contacts';
+import { add, remove, findContact } from '../redux/contacts/slice';
 
 export const App = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.contacts);
   const filter = useSelector(state => state.contacts.filter);
-
-  // const [contacts, setContacts] = useLocalStorage(STORAGE_KEY, initailContacts);
 
   function formSubmitHandler({ name, number }) {
     const checkName = contacts.some(item =>
@@ -28,19 +22,22 @@ export const App = () => {
   }
 
   function onFilterChange([value]) {
-    if (!value) {
-      return;
+    if (value) {
+      dispatch(findContact(value));
     }
-    dispatch(findFilter(value));
+    // !value ? setFilter('') : setFilter(value);
   }
 
   const filteredContacts = useMemo(() => {
-    return contacts.filter(item => {
-      return item.name
-        .toLowerCase()
-        .trim()
-        .includes(filter.toLowerCase().trim());
-    });
+    if (filter) {
+      return contacts.filter(item => {
+        return item.name
+          .toLowerCase()
+          .trim()
+          .includes(filter.toLowerCase().trim());
+      });
+    }
+    return contacts;
   }, [contacts, filter]);
 
   function deleteItem(itemID) {
