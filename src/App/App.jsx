@@ -22,10 +22,7 @@ export const App = () => {
   }
 
   function onFilterChange([value]) {
-    if (value) {
-      dispatch(findContact(value));
-    }
-    // !value ? setFilter('') : setFilter(value);
+    !value ? dispatch(findContact((value = ''))) : dispatch(findContact(value));
   }
 
   const filteredContacts = useMemo(() => {
