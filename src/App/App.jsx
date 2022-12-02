@@ -13,8 +13,8 @@ export const App = () => {
   const filter = useSelector(state => state.contacts.filter);
 
   function formSubmitHandler({ name, number }) {
-    const checkName = contacts.some(item =>
-      item.name.toLowerCase().trim().includes(name.toLowerCase().trim())
+    const checkName = contacts.some(
+      item => item.name.toLowerCase().trim() === name.toLowerCase().trim()
     );
     checkName
       ? alert(`${name} is already in contacts`)
