@@ -16,10 +16,10 @@ export const contactsSlice = createSlice({
       );
       state.contacts.splice(index, 1);
     },
-    // filter(state, action) {
-    //   state.contacts.filter();
-    // },
+    findFilter(state, action) {
+      state.filter = action.payload;
+    },
   },
 });
 
-export const { add, remove, filter } = contactsSlice.actions;
+export const { add, remove, findFilter } = contactsSlice.actions;

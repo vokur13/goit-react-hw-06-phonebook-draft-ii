@@ -7,16 +7,16 @@ import { nanoid } from 'nanoid';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { initailContacts } from '../utils/initialContacts';
 import { useSelector, useDispatch } from 'react-redux';
-import { add, remove, filter } from '../redux/contacts/slice';
+import { add, remove, findFilter } from '../redux/contacts/slice';
 
 const STORAGE_KEY = 'contacts';
 
 export const App = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.contacts.filter);
 
   // const [contacts, setContacts] = useLocalStorage(STORAGE_KEY, initailContacts);
-  // const [filter, setFilter] = useState('');
 
   function formSubmitHandler({ name, number }) {
     const checkName = contacts.some(item =>
@@ -27,20 +27,21 @@ export const App = () => {
       : dispatch(add({ id: nanoid(), name, number }));
   }
 
-  // function onFilterChange([value]) {
-  //   !value ? setFilter('') : setFilter(value);
-  // }
+  function onFilterChange([value]) {
+    if (!value) {
+      return;
+    }
+    dispatch(findFilter(value));
+  }
 
-  // const filteredContacts = useMemo(() => {
-  //   return contacts.filter(item => {
-  //     return item.name
-  //       .toLowerCase()
-  //       .trim()
-  //       .includes(filter.toLowerCase().trim());
-  //   });
-  // }, [contacts]);
-
-  const filteredContacts = contacts;
+  const filteredContacts = useMemo(() => {
+    return contacts.filter(item => {
+      return item.name
+        .toLowerCase()
+        .trim()
+        .includes(filter.toLowerCase().trim());
+    });
+  }, [contacts, filter]);
 
   function deleteItem(itemID) {
     dispatch(remove(itemID));
@@ -48,20 +49,11 @@ export const App = () => {
 
   return (
     <Box width={1} p={4} bg="bgBasic" as="main">
-      {/* <>
-        <button onClick={() => dispatch(add(payload))}>Add</button>
-        {value}
-        <button onClick={() => dispatch(remove(payload))}>Remove</button>
-      </> */}
       <h1>Phonebook</h1>
       <ContactForm onFormSubmit={formSubmitHandler} />
       <h2>Contacts</h2>
-      {/* <Filter onChange={onFilterChange} /> */}
+      <Filter onChange={onFilterChange} />
       <ContactList onDelete={deleteItem} list={filteredContacts} />
     </Box>
   );
 };
-
-{
-  /* <ContactList onDelete={deleteItem} list={filteredContacts} />; */
-}
